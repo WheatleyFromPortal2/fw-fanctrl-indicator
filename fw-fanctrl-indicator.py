@@ -3,8 +3,8 @@
 # requires libappindicator-gtk3 to be installed (either through your package manager or pip)
 import os, gi, json
 
-configPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}/config.json"
-iconPath = f"{__file__.replace("fw-fanctrl-indicatory.py", '')}/fan-white.svg"
+configPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}config.json"
+iconPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}fan-white.svg"
 
 print("---Starting fw-fanctrl-indicator---")
 print('configPath:', configPath)
