@@ -9,7 +9,7 @@ sed -i -e ${sedArg1} fw-fanctrl-indicator.service # fingers crossed
 sed -i -e ${sedArg2} fw-fanctrl-indicator.service # let's hope this works
 sed -i -e "s%NOT_ROOT%${USER}%g" fw-fanctrl-indicator.service # don't run the indicator as root :facepalm: 
 
-sudo cp fw-fanctrl-indicator.service /etc/systemd/system/ # copy our systemd service file to where the services are stored
+sudo cp fw-fanctrl-indicator.service $USER/.config/systemd/user/ # copy our systemd service file to where the user's services are stored
 
 sudo systemctl enable fw-fanctrl-indicator.service # enable the service
 sudo systemctl start fw-fanctrl-indicator.service # start the service
