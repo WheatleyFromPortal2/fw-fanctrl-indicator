@@ -3,15 +3,14 @@
 # requires libappindicator-gtk3 to be installed (either through your package manager or pip)
 import os, gi, json
 
-home = os.getenv('HOME')
-configPath = f'{home}/.config/fw-fanctrl/config.json'
-iconPath = f'{home}/code/fw-fanctrl-indicator/fan-white.svg'
+configPath = f"{__file__}/config.json"
+iconPath = f"{__file__}/fan-white.svg"
 
-print('---Starting fw-fanctrl-indicator---')
+print("---Starting fw-fanctrl-indicator---")
 print('configPath:', configPath)
 print('iconPath:', iconPath)
 
-gi.require_version("Gtk", "3.0")
+gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
@@ -24,7 +23,7 @@ def main():
     if os.path.exists(iconPath):
         indicator.set_icon_full(iconPath, 'Custom Icon')
     else:
-        print('\033[91m' + 'Icon File not Found!' + '\033[0m' + " - Reverting to default computer-laptop-symbolic") 
+        print('\033[91m' + "Icon File not Found!" + '\033[0m' + " - Reverting to default computer-laptop-symbolic (see fw-fanctrl-indicator.py -h)") 
         print("")
     indicator.set_menu(menu())
     gtk.main()
@@ -36,12 +35,12 @@ def menu():
         if i == currentStrategy: # this is to distinguish the current strategy
             menu.append(gtk.SeparatorMenuItem())
             command = gtk.MenuItem(label='[' + i + ']') 
-            command.connect("activate", lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
+            command.connect('activate', lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
             menu.append(command)
             menu.append(gtk.SeparatorMenuItem())
         else:
             command = gtk.MenuItem(label=i)
-            command.connect("activate", lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
+            command.connect('activate', lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
             menu.append(command)
     exittray = gtk.MenuItem(label='Exit Tray')
     exittray.connect('activate', quit)
