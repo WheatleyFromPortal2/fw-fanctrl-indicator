@@ -20,4 +20,5 @@ systemctl --user start fw-fanctrl-indicator.service # start the service
 
 echo "fw-fanctrl-indicator installed, configured, and started!"
 
+loginctl enable-linger hunterd
 systemctl --user status fw-fanctrl-indicator.service
