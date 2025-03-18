@@ -4,6 +4,6 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=never
-ExecStart=/usr/bin/python3 FW_FANCTRL_INDICATOR FW_FANCTRL
+ExecStart=/usr/bin/python3 INDICATOR FW_FANCTRL
 [Install]
 WantedBy=multi-user.target
