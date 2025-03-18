@@ -4,7 +4,6 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=never
-User=NOT_ROOT
 PassEnvironment=DISPLAY XDG_RUNTIME
 ExecStart=/usr/bin/python3 INDICATOR FW_FANCTRL
 [Install]

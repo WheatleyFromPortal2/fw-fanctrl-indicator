@@ -1,5 +1,5 @@
 #!/bin/bash
-if [$USER == root]; then
+if [ $USER == "root" ]; then
   echo "---DO NOT RUN THIS SCRIPT AS ROOT---"
   return
 fi
@@ -12,7 +12,6 @@ sedArg1="s%INDICATOR%${configPath}/fw-fanctrl-indicator.py%g"
 sedArg2="s%FW_FANCTRL%${configPath}%g"
 sed -i -e ${sedArg1} fw-fanctrl-indicator.service # fingers crossed
 sed -i -e ${sedArg2} fw-fanctrl-indicator.service # let's hope this works
-sed -i -e "s%NOT_ROOT%${USER}%g" fw-fanctrl-indicator.service # don't run the indicator as root :facepalm: 
 
 sudo cp fw-fanctrl-indicator.service /home/$USER/.config/systemd/user/ # copy our systemd service file to where the user's services are stored
 
@@ -21,4 +20,4 @@ systemctl --user start fw-fanctrl-indicator.service # start the service
 
 echo "fw-fanctrl-indicator installed, configured, and started!"
 
-sudo systemctl status fw-fanctrl-indicator.service
+systemctl --user status fw-fanctrl-indicator.service
