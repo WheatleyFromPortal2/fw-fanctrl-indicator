@@ -3,7 +3,7 @@ Description=fw-fanctrl system tray indicator for KDE
 After=multi-user.target
 [Service]
 Type=simple
-Restart=always
-ExecStart=/usr/bin/python3 /usr/local/bin/fw-fanctrl-indicator /home/hunterd/.config/fw-fanctrl/config.json
+Restart=never
+ExecStart=/usr/bin/python3 /usr/local/bin/fw-fanctrl-indicator FW_FANCTRL
 [Install]
 WantedBy=multi-user.target
