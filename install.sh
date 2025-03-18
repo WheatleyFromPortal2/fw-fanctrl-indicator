@@ -7,6 +7,7 @@ sedArg1="s%INDICATOR%${configPath}/fw-fanctrl-indicator.py%g"
 sedArg2="s%FW_FANCTRL%${configPath}%g"
 sed -i -e ${sedArg1} fw-fanctrl-indicator.service # fingers crossed
 sed -i -e ${sedArg2} fw-fanctrl-indicator.service # let's hope this works
+sed -i -e "s%NOT_ROOT%{$whoami}%g" # don't run the indicator as root :facepalm: 
 
 sudo cp fw-fanctrl-indicator.service /etc/systemd/system/ # copy our systemd service file to where the services are stored
 
