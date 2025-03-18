@@ -3,7 +3,9 @@
 sudo pacman -S libappindicator-gtk3 python-gobject # install dependencies (assume fw-fanctrl is already installed)
 read -p "Enter the path for your fw-fanctrl install - ex. /home/YOUR_USER/.config/fw-fanctrl: " configPath
 sudo cp fw-fanctrl-indicator.py *.svg $configPath # move our python and icon files to where fw-fanctrl is installed
-sedArg="s/FW_FANCTRL/${configPath}/g"
+sedArg="s%FW_FANCTRL%${configPath}%g"
+echo ${sedArg}
+
 sed -i -e ${sedArg} fw-fanctrl-indicator.service # let's hope this works
 
 sudo cp fw-fanctrl-indicator.service /etc/systemd/system/ # copy our systemd service file to where the services are stored
