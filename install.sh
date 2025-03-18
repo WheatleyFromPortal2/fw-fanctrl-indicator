@@ -15,3 +15,5 @@ sudo systemctl enable fw-fanctrl-indicator.service # enable the service
 sudo systemctl start fw-fanctrl-indicator.service # start the service
 
 echo "fw-fanctrl-indicator installed, configured, and started!"
+
+sudo systemctl status fw-fanctrl-indicator.service
