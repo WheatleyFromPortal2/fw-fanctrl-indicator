@@ -1,4 +1,27 @@
 # fw-fanctrl-indicator
+
 A GTK 3 system tray indicator for the fw-fanctrl service
 
-Creates a system tray widget using GTK3 and the AppIndicator bindings  
+Creates a system tray widget using GTK3 and the AppIndicator bindings
+Created for Arch Linux, but any other distro could work if you modify `install.sh`
+
+
+# Supported Desktop Environments
+| Desktop Environment | Working? |  Notes  | Last Tested Version |
+|:--------------------|:---------|:--------|:--------------------|
+| KDE                 | ✅ Yes   | none    | 6.2.4               |
+| GNOME               | Untested | none    | none                |
+| Budgie              | Untested | none    | none                |
+| XFCE                | Untested | none    | none                |
+
+# Requirements
+
+- [fw-fanctrl](https://github.com/TamtamHero/fw-fanctrl) 
+- [libappindicator-gtk3](https://archlinux.org/packages/extra/x86_64/libappindicator-gtk3/) (`install.sh` automatically installs)
+- [python-gobject](https://archlinux.org/packages/extra/x86_64/python-gobject/) (`install.sh` automatically installs)
+ 
+# Installation
+1. `git clone https://github.com/WheatleyFromPortal2/fw-fanctrl-indicator.git`
+2. `cd fw-fanctrl-indicator`
+3. `./install.sh`
+
