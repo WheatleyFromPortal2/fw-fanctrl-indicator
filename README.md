@@ -21,7 +21,23 @@ Created for Arch Linux, but any other distro could work if you modify `install.s
 - [python-gobject](https://archlinux.org/packages/extra/x86_64/python-gobject/) (`install.sh` automatically installs)
  
 # Installation
+
 1. `git clone https://github.com/WheatleyFromPortal2/fw-fanctrl-indicator.git`
 2. `cd fw-fanctrl-indicator`
-3. `./install.sh`
+3. `./install.sh` (DO NOT RUN AS ROOT)
 
+# Manual Installation (for distros other than Arch Linux)
+
+1. `git clone https://github.com/WheatleyFromPortal2/fw-fanctrl-indicator.git`
+2. `cd fw-fanctrl-indicator`
+3. install `libappindicator-gtk3` and `python-gobject`
+    - Use your distros' package manager or pip
+4. Move `fw-fanctrl-indicator.py`, `fan-black.svg` and `fan-white.svg` to wherever your `fw-fanctrl` `config.json` is
+    - `config.json` is often in `~/.config/fw-fanctrl`
+5. Enable the systemd service
+    - copy `fw-fanctrl-indicator.service` to `~/.config/systemd/user`
+        - If you're not using systemd, you will need to write your own service file
+    - run `systemctl --user enable fw-fanctrl-indicator.service` to enable the service
+    - run `systemctl --user start fw-fanctrl-indicator.service` to start the service
+    - run `loginctl enable-linger $USER` to make sure the service starts at boot
+    - run `systemctl --user status fw-fanctrl-indicator.service` to check its status

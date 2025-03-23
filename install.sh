@@ -28,7 +28,7 @@ sudo cp fw-fanctrl-indicator.service /home/$USER/.config/systemd/user/ # copy ou
 echo -e $blue"---Enabling systemd Service---\n"$normal
 systemctl --user enable fw-fanctrl-indicator.service # enable the service
 systemctl --user start fw-fanctrl-indicator.service # start the service
-loginctl enable-linger hunterd # make sure the service starts at boot
+loginctl enable-linger $USER # make sure the service starts at boot
 
 echo -e $green"fw-fanctrl-indicator installed, configured, and started! displaying status\n"$normal
 
