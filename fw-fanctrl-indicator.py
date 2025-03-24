@@ -1,10 +1,14 @@
 #!/usr/bin/python
 # initial code copied from https://fosspost.org/custom-system-tray-icon-indicator-linux with import modified
 # requires libappindicator-gtk3 to be installed (either through your package manager or pip)
-import os, gi, json, subprocess
+import os, gi, json
+
+red = '\033[91m'
+normal = '\033[0m'
 
 configPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}config.json" # use the location of this python file to find the config (because it should be installed there)
 iconPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}fan-white.svg" # use the location of the this python file to find the icons (because they should be installed there)
+defaultIcon = "computer-laptop-symbolic"
 
 print("---Starting fw-fanctrl-indicator---")
 print('configPath:', configPath)
@@ -23,7 +27,7 @@ def main():
     if os.path.exists(iconPath): # check if the icon exists
         indicator.set_icon_full(iconPath, 'Custom Icon') # set the icon
     else:
-        print('\033[91m' + "Icon File not Found!" + '\033[0m' + " - Reverting to default computer-laptop-symbolic")  # warn the user icon is not found, instead it will default to "computer-laptop-symbolic"
+        print(red + "Icon File not Found!" + normal + " - Reverting to default:", defaultIcon)  # warn the user icon is not found, instead it will default to "computer-laptop-symbolic"
     indicator.set_menu(menu())
     gtk.main()
 
@@ -71,8 +75,8 @@ def buildStrategyList(): # make a list with all the strategies from the config f
     try:
         with open(configPath, 'r') as configFile:
             config = json.load(configFile)
-    except FileNotFoundError:
-            print('\033[91m' + 'Config File not Found!' + '\033[0m')
+    except FileNotFoundError as err:
+            print(red + 'Config File not Found! err:' + normal, err)
             exit()
     for i in config['strategies']:
         strategyList.append(i) # add each strategy from the config file to strategyList
@@ -96,21 +100,21 @@ def updateStats():
     
 
 def getStats(): # return CPU Temp and RPM of system fan
-    sensorsJSON = os.popen("sensors -j").read()
+    sensorsJSON = os.popen("sensors -j").read() # run the command "sensors -j" and store the result in sensorsJSON
     try:
-        sensors = json.loads(sensorsJSON)
-    except:
-        print("loading 'sensors -j' as JSON failed")
+        sensors = json.loads(sensorsJSON) # try to parse the result into JSON 
+    except json.decoder.JSONDecodeError as err:
+        print(red + "loading 'sensors -j' as JSON failed; err:" + normal, err)
         return None, None
     try:
         temp = int(sensors["cros_ec-isa-0000"]["F75303_CPU"]["temp2_input"])
-    except:
-        print("getting temp failed")
+    except KeyError as err:
+        print(red + "getting temp failed; err:" + normal, err)
         temp = None
     try:
         RPM = int(sensors["cros_ec-isa-0000"]["fan1"]["fan1_input"])
-    except:
-        print("getting RPM failed")
+    except KeyError as err:
+        print(red + "getting RPM failed; err:" + normal, err)
         RPM = None
 
     return temp, RPM
