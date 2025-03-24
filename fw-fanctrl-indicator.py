@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # initial code copied from https://fosspost.org/custom-system-tray-icon-indicator-linux with import modified
 # requires libappindicator-gtk3 to be installed (either through your package manager or pip)
-import os, gi, json
+import os, gi, json, subprocess
 
 configPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}config.json" # use the location of this python file to find the config (because it should be installed there)
 iconPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}fan-white.svg" # use the location of the this python file to find the icons (because they should be installed there)
@@ -13,7 +13,7 @@ print('iconPath:', iconPath)
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
-from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
+from gi.repository import Gtk as gtk, AppIndicator3 as appindicator, GLib
 
 def main():
     global indicator, strategyList, currentStrategy
@@ -28,18 +28,30 @@ def main():
     gtk.main()
 
 def menu():
+    global statsItem
     menu = gtk.Menu()
+
+    temp, RPM = getStats()
+    if RPM is None: # workaround because "or" sees 0 as None
+        RPM = "--"
+    statsItem = gtk.MenuItem(label=f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    menu.append(statsItem)
+    statsItem.show()
+    menu.append(gtk.SeparatorMenuItem()) # create a menu separator after to separate the stats
+    updateStats()
     for i in strategyList: # read the strategyList created by buildStrategyList
         if i == currentStrategy: # this is to distinguish the current strategy
-            menu.append(gtk.SeparatorMenuItem()) # create a menu separator before to distinguish the current strategy
-            command = gtk.MenuItem(label='[' + i + ']') # add brackets to the current strategy to distingish
+            emoji = gtk.Image.new_from_icon_name("checkmark-symbolic", gtk.IconSize.MENU)
+            command = gtk.ImageMenuItem(label=i) # add brackets to the current strategy to distingish
+            command.set_image(emoji)
+            command.set_always_show_image(True)
             command.connect('activate', lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
             menu.append(command) # add the command to the menu
-            menu.append(gtk.SeparatorMenuItem()) # create a menu separator after to distinguish the current strategy
         else: # strategy is not the current strategy
             command = gtk.MenuItem(label=i) # create the menu item
             command.connect('activate', lambda _, s=i: strategyClick(s)) # use a lambda function to pass the current strategy into the function call
             menu.append(command) # append the menu item to the menu
+
     exittray = gtk.MenuItem(label='Exit Tray') # create the exit tray command
     exittray.connect('activate', quit) # connect it to our quit() function
     menu.append(exittray) # add it to the menu
@@ -74,6 +86,34 @@ def strategyClick(strategy):
     global currentStrategy
     currentStrategy = strategy
     updateMenu()
+
+def updateStats():
+    temp, RPM = getStats()
+    if RPM is None: # workaround because "or" sees 0 as None
+        RPM = "--"
+    statsItem.set_label(f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    GLib.timeout_add(1000, updateStats)
+    
+
+def getStats(): # return CPU Temp and RPM of system fan
+    sensorsJSON = os.popen("sensors -j").read()
+    try:
+        sensors = json.loads(sensorsJSON)
+    except:
+        print("loading 'sensors -j' as JSON failed")
+        return None, None
+    try:
+        temp = int(sensors["cros_ec-isa-0000"]["F75303_CPU"]["temp2_input"])
+    except:
+        print("getting temp failed")
+        temp = None
+    try:
+        RPM = int(sensors["cros_ec-isa-0000"]["fan1"]["fan1_input"])
+    except:
+        print("getting RPM failed")
+        RPM = None
+
+    return temp, RPM
 
 def quit(_):
     gtk.main_quit()
