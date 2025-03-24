@@ -12,7 +12,7 @@ fi
 
 echo -e $blue'---Installing Dependencies (for Arch Linux)---'
 echo -e '(fw-fanctrl still must already be installed)'$normal
-sudo pacman -S libappindicator-gtk3 python-gobject # install dependencies (assume fw-fanctrl is already installed)
+sudo pacman -S libappindicator-gtk3 python-gobject lm-sensors # install dependencies (assume fw-fanctrl is already installed)
 
 echo -e $blue"---Copying Over Files---"$normal
 configPath=/home/$USER/.config/fw-fanctrl # fw-fanctrl config should be installed in ~/.config/fw-fanctrl
