@@ -22,6 +22,7 @@ from gi.repository import Gtk as gtk, AppIndicator3 as appindicator, GLib
 def main():
     global indicator, strategyList, currentStrategy
     indicator = appindicator.Indicator.new("customtray", "computer-laptop-symbolic", appindicator.IndicatorCategory.APPLICATION_STATUS)
+    indicator.set_title("fw-fanctrl")
     strategyList, currentStrategy = buildStrategyList()
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     if os.path.exists(iconPath): # check if the icon exists
