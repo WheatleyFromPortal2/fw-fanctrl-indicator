@@ -10,6 +10,12 @@ configPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}config.json" # u
 iconPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}fan-white.svg" # use the location of the this python file to find the icons (because they should be installed there)
 defaultIcon = "computer-laptop-symbolic"
 
+tempIcons = {
+    '70': "temperature-cold-symbolic",
+    '90': "temperature-normal-symbolic",
+    "100": "temperature-warm-symbolic"
+}
+
 print("---Starting fw-fanctrl-indicator---")
 print('configPath:', configPath)
 print('iconPath:', iconPath)
@@ -39,7 +45,10 @@ def menu():
     temp, RPM = getStats()
     if RPM is None: # workaround because "or" sees 0 as None
         RPM = "--"
-    statsItem = gtk.MenuItem(label=f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    statsIcon = getTempIcon(temp)
+    statsItem = gtk.ImageMenuItem(label=f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    statsItem.set_image(statsIcon)
+    statsItem.set_always_show_image(True)
     menu.append(statsItem)
     statsItem.show()
     menu.append(gtk.SeparatorMenuItem()) # create a menu separator after to separate the stats
@@ -91,6 +100,13 @@ def strategyClick(strategy):
     global currentStrategy
     currentStrategy = strategy
     updateMenu()
+
+def getTempIcon(temp):
+    for i in tempIcons:
+        if temp < int(i):
+            return gtk.Image.new_from_icon_name(tempIcons[i], gtk.IconSize.MENU)
+    return gtk.Image.new_from_icon_name("temperature-warm-symbolic", gtk.IconSize.MENU)
+
 
 def updateStats():
     temp, RPM = getStats()
