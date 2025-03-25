@@ -113,6 +113,7 @@ def updateStats():
     if RPM is None: # workaround because "or" sees 0 as None
         RPM = "--"
     statsItem.set_label(f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    indicator.set_title(f"{temp or "--"}°C {RPM}rpm")
     GLib.timeout_add(1000, updateStats)
     
 
