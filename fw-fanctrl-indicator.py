@@ -45,8 +45,8 @@ def menu():
     temp, RPM = getStats()
     if RPM is None: # workaround because "or" sees 0 as None
         RPM = "--"
-    statsIcon = getTempIcon(temp)
     statsItem = gtk.ImageMenuItem(label=f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
+    statsIcon = getTempIcon(temp)
     statsItem.set_image(statsIcon)
     statsItem.set_always_show_image(True)
     menu.append(statsItem)
@@ -74,7 +74,6 @@ def menu():
     return menu # return the menu for GTK to read
 
 def updateMenu():
-    print('updating menu')
     indicator.set_menu(menu())
     gtk.main()
 
@@ -95,7 +94,6 @@ def buildStrategyList(): # make a list with all the strategies from the config f
     return strategyList, currentStrategy
     
 def strategyClick(strategy):
-    print(f'fw-fanctrl {strategy}')
     os.system(f'fw-fanctrl {strategy}') # run fw-fanctrl with the strategy as the argument
     global currentStrategy
     currentStrategy = strategy
@@ -105,16 +103,18 @@ def getTempIcon(temp):
     for i in tempIcons:
         if temp < int(i):
             return gtk.Image.new_from_icon_name(tempIcons[i], gtk.IconSize.MENU)
-    return gtk.Image.new_from_icon_name("temperature-warm-symbolic", gtk.IconSize.MENU)
+    return gtk.Image.new_from_icon_name("dialog-warning-symbolic", gtk.IconSize.MENU) # if the temp is hotter, use a warning symbol
 
 
 def updateStats():
     temp, RPM = getStats()
     if RPM is None: # workaround because "or" sees 0 as None
         RPM = "--"
-    statsItem.set_label(f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
-    indicator.set_title(f"{temp or "--"}°C {RPM}rpm")
-    GLib.timeout_add(1000, updateStats)
+    statsItem.set_label(f"CPU: {temp or "--"}°C | Fan: {RPM}rpm") # update the stats bar
+    indicator.set_title(f"{temp or "--"}°C {RPM}rpm") # update the tooltip
+    statsIcon = getTempIcon(temp) # get the stats icon
+    statsItem.set_image(statsIcon) # update the image
+    GLib.timeout_add(1000, updateStats) # update every 1 second
     
 
 def getStats(): # return CPU Temp and RPM of system fan
@@ -125,7 +125,7 @@ def getStats(): # return CPU Temp and RPM of system fan
         print(red + "loading 'sensors -j' as JSON failed; err:" + normal, err)
         return None, None
     try:
-        temp = int(sensors["cros_ec-isa-0000"]["F75303_CPU"]["temp2_input"])
+        temp = int(sensors["coretemp-isa-0000"]["Package id 0"]["temp1_input"])
     except KeyError as err:
         print(red + "getting temp failed; err:" + normal, err)
         temp = None
