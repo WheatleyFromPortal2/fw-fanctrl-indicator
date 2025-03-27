@@ -11,7 +11,7 @@ iconPath = f"{__file__.replace("fw-fanctrl-indicator.py", '')}fan-white.svg" # u
 defaultIcon = "computer-laptop-symbolic"
 
 tempIcons = {
-    '70': "temperature-cold-symbolic",
+    '80': "temperature-cold-symbolic",
     '90': "temperature-normal-symbolic",
     "100": "temperature-warm-symbolic"
 }
@@ -46,7 +46,7 @@ def menu():
     if RPM is None: # workaround because "or" sees 0 as None
         RPM = "--"
     statsItem = gtk.ImageMenuItem(label=f"CPU: {temp or "--"}°C | Fan: {RPM}rpm")
-    statsIcon = getTempIcon(temp)
+    statsIcon = getTempIcon(temp, True)
     statsItem.set_image(statsIcon)
     statsItem.set_always_show_image(True)
     menu.append(statsItem)
@@ -99,11 +99,17 @@ def strategyClick(strategy):
     currentStrategy = strategy
     updateMenu()
 
-def getTempIcon(temp):
+def getTempIcon(temp, returnImage):
     for i in tempIcons:
-        if temp < int(i):
-            return gtk.Image.new_from_icon_name(tempIcons[i], gtk.IconSize.MENU)
-    return gtk.Image.new_from_icon_name("dialog-warning-symbolic", gtk.IconSize.MENU) # if the temp is hotter, use a warning symbol
+        if temp <= int(i):
+            if returnImage:
+                return gtk.Image.new_from_icon_name(tempIcons[i], gtk.IconSize.MENU)
+            else:
+                return tempIcons[i]
+    if returnImage:
+        return gtk.Image.new_from_icon_name("dialog-warning-symbolic", gtk.IconSize.MENU) # if the temp is hotter, use a warning symbol
+    else:
+        return "dialog-warning-symbolic"
 
 
 def updateStats():
@@ -112,8 +118,9 @@ def updateStats():
         RPM = "--"
     statsItem.set_label(f"CPU: {temp or "--"}°C | Fan: {RPM}rpm") # update the stats bar
     indicator.set_title(f"{temp or "--"}°C {RPM}rpm") # update the tooltip
-    statsIcon = getTempIcon(temp) # get the stats icon
+    statsIcon = getTempIcon(temp, True) # get the stats icon
     statsItem.set_image(statsIcon) # update the image
+    indicator.set_icon_full(getTempIcon(temp, False), 'Custom Icon') # set the icon
     GLib.timeout_add(1000, updateStats) # update every 1 second
     
 
