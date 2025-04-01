@@ -1,10 +1,10 @@
 [Unit]
 Description=fw-fanctrl system tray indicator for KDE
-After=multi-user.target
+After=graphical.target
 [Service]
 Type=simple
 Restart=no
 PassEnvironment=DISPLAY XDG_RUNTIME
 ExecStart=/usr/bin/python3 INDICATOR FW_FANCTRL
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
