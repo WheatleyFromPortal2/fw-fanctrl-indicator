@@ -1,6 +1,6 @@
 [Unit]
 Description=fw-fanctrl system tray indicator for KDE
-After=graphical.target
+After=xdg-desktop-autostart.target
 [Service]
 Type=simple
 Restart=no
