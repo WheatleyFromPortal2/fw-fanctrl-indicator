@@ -5,6 +5,6 @@ After=xdg-desktop-autostart.target
 Type=simple
 Restart=no
 PassEnvironment=DISPLAY XDG_RUNTIME
-ExecStart=/usr/bin/python3 INDICATOR FW_FANCTRL
+ExecStart=/usr/bin/python3 /etc/fw-fanctrl/fw-fanctrl-indicator.py
 [Install]
 WantedBy=default.target

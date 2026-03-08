@@ -1,5 +1,6 @@
 # custom (not from github's default)
 config.json
+*.kate-swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

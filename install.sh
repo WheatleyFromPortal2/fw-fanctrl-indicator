@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # declare colors
 red='\033[31m'
 blue='\033[34m'
@@ -11,25 +12,33 @@ if [ $USER == "root" ]; then
 fi
 
 echo -e $blue'---Installing Dependencies (for Arch Linux)---'
+echo
+
 echo -e '(fw-fanctrl still must already be installed)'$normal
+echo
+
 sudo pacman -S libappindicator-gtk3 python-gobject lm-sensors # install dependencies (assume fw-fanctrl is already installed)
 
+echo
 echo -e $blue"---Copying Over Files---"$normal
-configPath=/home/$USER/.config/fw-fanctrl # fw-fanctrl config should be installed in ~/.config/fw-fanctrl
+echo
+
+configPath=/etc/fw-fanctrl 
+
 sudo cp fw-fanctrl-indicator.py *.svg $configPath # move our python and icon files to where fw-fanctrl is installed
 
-echo -e $blue"---Modifying .service File to Reflect Current User---"$normal # we need to modify the .service file so systemd can find our .py file
-sedArg1="s%INDICATOR%${configPath}/fw-fanctrl-indicator.py%g"
-sedArg2="s%FW_FANCTRL%${configPath}%g"
-sed -i -e ${sedArg1} fw-fanctrl-indicator.service # fingers crossed
-sed -i -e ${sedArg2} fw-fanctrl-indicator.service # let's hope this works
 sudo cp fw-fanctrl-indicator.service /home/$USER/.config/systemd/user/ # copy our systemd service file to where the user's services are stored
 
+echo
 echo -e $blue"---Enabling systemd Service---\n"$normal
+echo
+
 systemctl --user enable fw-fanctrl-indicator.service # enable the service
 systemctl --user start fw-fanctrl-indicator.service # start the service
 loginctl enable-linger $USER # make sure the service starts at boot
 
+echo
 echo -e $green"fw-fanctrl-indicator installed, configured, and started! displaying status\n"$normal
+echo
 
 systemctl --user status fw-fanctrl-indicator.service # indicate the status of the service
