@@ -29,7 +29,7 @@ tempIcons = {
 }
 
 DEFAULT_ICON = "computer-laptop-symbolic"
-UPDATE_TIME = 1000  # update every second
+UPDATE_TIME = 5  # update every 5 seconds
 
 # initialize global variables
 temp = 0
@@ -58,6 +58,7 @@ def main():
               + normal
               + " - Reverting to default:", defaultIcon)
     indicator.set_menu(menu())
+    glib.timeout_add_seconds(UPDATE_TIME, updateMenu)
     gtk.main()
 
 
@@ -118,7 +119,7 @@ def menu():
 
 def updateMenu():
     indicator.set_menu(menu())
-    gtk.main()
+    return True
 
 
 def strategyClick(clickedStrategy):
@@ -158,7 +159,8 @@ def updateStats():
     statsItem.set_image(statsIcon)  # update the image
     # set the icon
     indicator.set_icon_full(getTempIcon(temp, False), 'Custom Icon')
-    glib.timeout_add(UPDATE_TIME, updateStats)
+
+    return True
 
 
 def updateState():  # update our state from `fw-fanctrl`
@@ -173,7 +175,7 @@ def updateState():  # update our state from `fw-fanctrl`
 
     global temp, speed, strategy, strategyList
 
-    temp = state["temperature"]
+    temp = state["movingAverageTemperature"]
     speed = state["speed"]
     strategy = state["strategy"]
 
